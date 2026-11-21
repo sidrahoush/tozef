@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>تَوظيف – Mini ATS</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f4f7;--sf:#fff;--tx:#17233b;--mu:#66728a;--ln:#dde2ea;--ac:#2d4bd6;--acs:#e6eafc;--new:#2d4bd6;--review:#b7791f;--interview:#7c3aed;--accepted:#15803d;--rejected:#c2410c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1626;--sf:#18213a;--tx:#e8ecf6;--mu:#97a3bd;--ln:#2a3555;--ac:#7c93ff;--acs:#222d55}}
+:root[data-theme="dark"]{--bg:#0f1626;--sf:#18213a;--tx:#e8ecf6;--mu:#97a3bd;--ln:#2a3555;--ac:#7c93ff;--acs:#222d55}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.6 "IBM Plex Sans Arabic",Tahoma,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+aside{background:var(--sf);border-inline-end:1px solid var(--ln);padding:20px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
+.brand{font-weight:700;font-size:20px;padding:4px 10px 16px}
+.brand small{display:block;font-weight:400;font-size:12px;color:var(--mu)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:8px;background:none;border:0;text-align:start;padding:10px 12px;border-radius:8px;color:var(--mu);font-weight:500}
+.nav:hover{background:var(--bg)}.nav.on{background:var(--acs);color:var(--ac);font-weight:600}
+.badge{background:var(--ac);color:#fff;border-radius:99px;font-size:12px;padding:0 8px}
+main{padding:28px 32px;min-width:0}
+h1{font-size:24px;margin:0 0 4px}h2{font-size:17px;margin:0 0 12px}
+.sub{color:var(--mu);margin:0 0 22px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:9px 16px;font-weight:600}
+.btn.ghost{background:transparent;color:var(--tx);border:1px solid var(--ln)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.stat{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:14px 16px}
+.stat b{font-size:26px;display:block}.stat span{color:var(--mu);font-size:13px}
+.panel{background:var(--sf);border:1px solid var(--ln);border-radius:10px;overflow:hidden}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:560px}
+th,td{text-align:start;padding:12px 16px;border-bottom:1px solid var(--ln)}
+th{font-size:13px;color:var(--mu);font-weight:500}tr:last-child td{border-bottom:0}
+.tag{display:inline-block;font-size:12px;padding:1px 10px;border-radius:99px;background:var(--acs);color:var(--ac)}
+.board{display:grid;grid-template-columns:repeat(5,minmax(220px,1fr));gap:12px;overflow-x:auto;padding-bottom:12px}
+.col{background:color-mix(in srgb,var(--sf) 55%,var(--bg));border:1px solid var(--ln);border-radius:10px;padding:10px;min-height:300px}
+.col.over{outline:2px dashed var(--ac)}
+.col h3{font-size:14px;margin:2px 4px 10px;display:flex;justify-content:space-between;align-items:center}
+.col h3 i{width:9px;height:9px;border-radius:50%;display:inline-block;margin-inline-end:6px}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:10px 12px;margin-bottom:8px;cursor:grab;width:100%;text-align:start;display:block}
+.card:hover{border-color:var(--ac)}.card b{display:block}.card span{font-size:12.5px;color:var(--mu)}
+.stars{color:#d9a21b;letter-spacing:2px;font-size:13px}
+.filters{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+select,input,textarea{background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:9px 12px;width:100%}
+.filters select{width:auto;min-width:180px}
+.drawer{position:fixed;inset:0;background:rgba(10,15,30,.45);display:none;z-index:20}
+.drawer.open{display:block}
+.sheet{position:absolute;inset-block:0;inset-inline-start:0;width:min(460px,100%);background:var(--sf);padding:24px;overflow:auto;padding-top:calc(24px + env(safe-area-inset-top,0px));animation:in .2s ease-out}
+@keyframes in{from{transform:translateX(-24px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.sheet{animation:none}}
+.close{float:left;background:none;border:0;font-size:22px;color:var(--mu)}
+.steps{display:flex;gap:4px;margin:14px 0}.steps span{flex:1;height:6px;border-radius:3px;background:var(--ln)}.steps span.done{background:var(--ac)}
+.kv{display:grid;grid-template-columns:90px 1fr;gap:6px 10px;margin:14px 0;font-size:14px}.kv dt{color:var(--mu)}.kv dd{margin:0}
+.rate button{background:none;border:0;font-size:26px;color:var(--ln);padding:0 2px}.rate button.on{color:#d9a21b}
+.note{background:var(--bg);border-radius:8px;padding:10px 12px;margin:8px 0;font-size:14px}.note small{color:var(--mu);display:block}
+.actions{display:flex;gap:8px;margin:16px 0;flex-wrap:wrap}
+.hero{background:var(--ac);color:#fff;border-radius:12px;padding:32px;margin-bottom:22px}
+.hero h1{font-size:28px}.hero p{margin:6px 0 0;opacity:.9}
+.job{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--ln);flex-wrap:wrap}
+.job:last-child{border:0}.job b{font-size:16px}.job span{color:var(--mu);font-size:13.5px}
+.form{max-width:520px;display:grid;gap:12px}
+.form label{display:grid;gap:4px;font-size:14px;font-weight:500}
+.drop{border:1.5px dashed var(--ln);border-radius:8px;padding:18px;text-align:center;color:var(--mu);font-size:14px}
+.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));inset-inline:0;margin:auto;width:max-content;max-width:90%;background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:8px;z-index:30;display:none}
+.empty{padding:22px;color:var(--mu);text-align:center}
+.note-hint{font-size:12.5px;color:var(--mu);margin-top:18px}
+@media (max-width:760px){.app{grid-template-columns:1fr}aside{position:static;height:auto;flex-direction:row;overflow-x:auto;padding:10px;border:0;border-bottom:1px solid var(--ln)}.brand{display:none}.nav{white-space:nowrap}main{padding:18px 14px}.board{grid-template-columns:repeat(5,230px)}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+ <div class="brand">تَوظيف<small>شركة كورتكسا للإلكترونيات</small></div>
+ <button class="nav on" data-v="dash">لوحة التحكم</button>
+ <button class="nav" data-v="board">المتقدمون <span class="badge" id="cnt">0</span></button>
+ <button class="nav" data-v="jobs">إدارة الوظائف</button>
+ <button class="nav" data-v="careers">صفحة الوظائف العامة</button>
+</aside>
+<main id="main"></main>
+</div>
+<div class="drawer" id="dr"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+<script>
+var ST=[["new","جديد"],["review","قيد المراجعة"],["interview","مقابلة أولى"],["accepted","مقبول"],["rejected","مرفوض"]];
+var SN={};ST.forEach(function(s){SN[s[0]]=s[1]});
+var jobs=[{id:1,t:"مهندس دعم فني",d:"الدعم الفني",l:"دمشق",ty:"دوام كامل"},{id:2,t:"مندوب مبيعات",d:"المبيعات",l:"دمشق",ty:"دوام كامل"},{id:3,t:"محاسب",d:"المالية",l:"عن بُعد",ty:"دوام جزئي"}];
+var cands=[
+{id:1,n:"ليلى الحسن",j:1,s:"new",r:0,e:"3 سنوات",c:"دمشق",m:"layla@mail.com",notes:[]},
+{id:2,n:"أحمد خليل",j:1,s:"review",r:3,e:"5 سنوات",c:"حمص",m:"ahmad@mail.com",notes:[]},
+{id:3,n:"رنا ديب",j:2,s:"interview",r:4,e:"4 سنوات",c:"دمشق",m:"rana@mail.com",notes:[{a:"سارة – الموارد البشرية",t:"تواصل ممتاز وخبرة جيدة بالسوق المحلي."}]},
+{id:4,n:"عمر شاهين",j:3,s:"accepted",r:5,e:"7 سنوات",c:"حلب",m:"omar@mail.com",notes:[{a:"سارة – الموارد البشرية",t:"أنسب مرشح. العرض الوظيفي جاهز."}]},
+{id:5,n:"هبة مراد",j:2,s:"new",r:0,e:"سنتان",c:"اللاذقية",m:"heba@mail.com",notes:[]},
+{id:6,n:"سامر النجار",j:1,s:"rejected",r:2,e:"سنة",c:"دمشق",m:"samer@mail.com",notes:[{a:"سارة – الموارد البشرية",t:"الخبرة أقل من المطلوب."}]}];
+var view="dash",fj=0,applyJob=null,openId=null,nid=7;
+var $=function(i){return document.getElementById(i)};
+var jt=function(id){return jobs.filter(function(x){return x.id==id})[0].t};
+function stars(n){return "★★★★★".slice(0,n)+"☆☆☆☆☆".slice(0,5-n)}
+function toast(t){var e=$("toast");e.textContent=t;e.style.display="block";clearTimeout(toast.h);toast.h=setTimeout(function(){e.style.display="none"},2400)}
+function go(v){view=v;applyJob=null;document.querySelectorAll(".nav").forEach(function(b){b.classList.toggle("on",b.dataset.v==v)});render()}
+document.querySelectorAll(".nav").forEach(function(b){b.onclick=function(){go(b.dataset.v)}});
+
+function dash(){
+ var cnt=function(s){return cands.filter(function(c){return c.s==s}).length};
+ var h='<h1>أهلاً بكِ يا سارة</h1><p class="sub">ملخص عملية التوظيف اليوم</p><div class="stats">';
+ h+='<div class="stat"><b>'+jobs.length+'</b><span>وظائف مفتوحة</span></div><div class="stat"><b>'+cands.length+'</b><span>إجمالي المتقدمين</span></div><div class="stat"><b>'+cnt("new")+'</b><span>بانتظار المراجعة</span></div><div class="stat"><b>'+cnt("interview")+'</b><span>في مرحلة المقابلة</span></div></div>';
+ h+='<h2>الوظائف الحالية</h2><div class="panel scroll"><table><tr><th>الوظيفة</th><th>القسم</th><th>المتقدمون</th><th></th></tr>';
+ jobs.forEach(function(j){h+='<tr><td><b>'+j.t+'</b></td><td>'+j.d+'</td><td>'+cands.filter(function(c){return c.j==j.id}).length+'</td><td><button class="btn ghost" data-fj="'+j.id+'">عرض المتقدمين</button></td></tr>'});
+ h+='</table></div>';
+ h+='<h2 style="margin-top:24px">آخر المتقدمين</h2><div class="panel">';
+ cands.slice(-3).reverse().forEach(function(c){h+='<div class="job"><div><b>'+c.n+'</b><br><span>'+jt(c.j)+'</span></div><button class="btn ghost" data-c="'+c.id+'">فتح الملف</button></div>'});
+ return h+'</div>';
+}
+function board(){
+ var h='<h1>المتقدمون</h1><p class="sub">اسحب البطاقة إلى مرحلة أخرى، أو افتح الملف لتقييم المرشح.</p><div class="filters"><select id="fj"><option value="0">كل الوظائف</option>';
+ jobs.forEach(function(j){h+='<option value="'+j.id+'"'+(fj==j.id?" selected":"")+'>'+j.t+'</option>'});
+ h+='</select></div><div class="board">';
+ ST.forEach(function(s){
+  var L=cands.filter(function(c){return c.s==s[0]&&(!fj||c.j==fj)});
+  h+='<div class="col" data-s="'+s[0]+'"><h3><span><i style="background:var(--'+s[0]+')"></i>'+s[1]+'</span><span class="tag">'+L.length+'</span></h3>';
+  L.forEach(function(c){h+='<button class="card" draggable="true" data-c="'+c.id+'"><b>'+c.n+'</b><span>'+jt(c.j)+' · '+c.e+'</span>'+(c.r?'<div class="stars">'+stars(c.r)+'</div>':'')+'</button>'});
+  h+='</div>'});
+ return h+'</div>';
+}
+function jobsV(){
+ var h='<div class="row" style="justify-content:space-between"><div><h1>إدارة الوظائف</h1><p class="sub">أضف وظيفة جديدة لتظهر مباشرة في صفحة الوظائف العامة.</p></div></div>';
+ h+='<div class="panel" style="padding:18px;margin-bottom:22px"><h2>وظيفة جديدة</h2><div class="form" style="max-width:none;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))"><label>المسمى الوظيفي<input id="nt" placeholder="مثال: مصمم جرافيك"></label><label>القسم<input id="nd" placeholder="مثال: التسويق"></label><label>الموقع<input id="nl" placeholder="دمشق"></label><div style="align-self:end"><button class="btn" id="addj">نشر الوظيفة</button></div></div></div>';
+ h+='<div class="panel">';
+ jobs.forEach(function(j){h+='<div class="job"><div><b>'+j.t+'</b><br><span>'+j.d+' · '+j.l+' · '+j.ty+'</span></div><span class="tag">منشورة</span></div>'});
+ return h+'</div>';
+}
+function careers(){
+ if(applyJob){
+  var j=jobs.filter(function(x){return x.id==applyJob})[0];
+  return '<button class="btn ghost" id="back" style="margin-bottom:16px">رجوع للوظائف</button><h1>التقديم على: '+j.t+'</h1><p class="sub">'+j.d+' · '+j.l+' · '+j.ty+'</p><div class="form"><label>الاسم الكامل<input id="an" placeholder="الاسم الثلاثي"></label><label>البريد الإلكتروني<input id="am" type="email" placeholder="name@mail.com"></label><label>سنوات الخبرة<select id="ae"><option>أقل من سنة</option><option>1 – 3 سنوات</option><option>3 – 5 سنوات</option><option>أكثر من 5 سنوات</option></select></label><div class="drop">اسحب السيرة الذاتية هنا أو اضغط للرفع (PDF حتى 5 ميغابايت)</div><button class="btn" id="send">إرسال الطلب</button></div>';
+ }
+ var h='<div class="hero"><h1>انضم إلى كورتكسا للإلكترونيات</h1><p>نبحث عن أشخاص يحبون التقنية ويريدون بناء شيء معنا.</p></div><h2>الوظائف المتاحة ('+jobs.length+')</h2><div class="panel">';
+ jobs.forEach(function(j){h+='<div class="job"><div><b>'+j.t+'</b><br><span>'+j.d+' · '+j.l+' · '+j.ty+'</span></div><button class="btn" data-ap="'+j.id+'">قدّم الآن</button></div>'});
+ return h+'</div><p class="note-hint">هذه الصفحة هي ما يراه المرشحون على موقع الشركة. جرّب التقديم وسيظهر الطلب عمود «جديد» في صفحة المتقدمون.</p>';
+}
+function render(){
+ $("cnt").textContent=cands.length;
+ $("main").innerHTML={dash:dash,board:board,jobs:jobsV,careers:careers}[view]();
+ bind();
+}
+function bind(){
+ var q=function(s,f){document.querySelectorAll(s).forEach(f)};
+ q("[data-fj]",function(b){b.onclick=function(){fj=b.dataset.fj;go("board")}});
+ q("[data-c]",function(b){b.onclick=function(){openC(+b.dataset.c)}});
+ q("[data-ap]",function(b){b.onclick=function(){applyJob=b.dataset.ap;render();scrollTo(0,0)}});
+ if($("fj"))$("fj").onchange=function(){fj=this.value;render()};
+ if($("back"))$("back").onclick=function(){applyJob=null;render()};
+ if($("send"))$("send").onclick=function(){
+  var n=$("an").value.trim(),m=$("am").value.trim();
+  if(!n||!m){toast("أدخل الاسم والبريد الإلكتروني للمتابعة");return}
+  cands.push({id:nid++,n:n,j:+applyJob,s:"new",r:0,e:$("ae").value,c:"—",m:m,notes:[]});
+  applyJob=null;render();toast("تم إرسال طلبك. سنتواصل معك قريباً")};
+ if($("addj"))$("addj").onclick=function(){
+  var t=$("nt").value.trim();if(!t){toast("أدخل المسمى الوظيفي أولاً");return}
+  jobs.push({id:jobs.length+1,t:t,d:$("nd").value||"عام",l:$("nl").value||"دمشق",ty:"دوام كامل"});render();toast("تم نشر الوظيفة")};
+ q(".card",function(c){c.ondragstart=function(e){e.dataTransfer.setData("t",c.dataset.c)}});
+ q(".col",function(col){
+  col.ondragover=function(e){e.preventDefault();col.classList.add("over")};
+  col.ondragleave=function(){col.classList.remove("over")};
+  col.ondrop=function(e){e.preventDefault();move(+e.dataTransfer.getData("t"),col.dataset.s)}});
+}
+function move(id,s){
+ var c=cands.filter(function(x){return x.id==id})[0];
+ if(c.s!=s){c.s=s;toast("تم نقل "+c.n+" إلى «"+SN[s]+"»")}
+ render();if(openId==id)openC(id);
+}
+function openC(id){
+ openId=id;var c=cands.filter(function(x){return x.id==id})[0];
+ var idx=ST.map(function(s){return s[0]}).indexOf(c.s);
+ var h='<button class="close" id="x" aria-label="إغلاق">×</button><h2 style="font-size:21px;margin:0">'+c.n+'</h2><span class="tag">'+SN[c.s]+'</span>';
+ h+='<div class="steps">';for(var i=0;i<4;i++)h+='<span class="'+(i<=idx&&c.s!="rejected"?"done":"")+'"></span>';h+='</div>';
+ h+='<dl class="kv"><dt>الوظيفة</dt><dd>'+jt(c.j)+'</dd><dt>الخبرة</dt><dd>'+c.e+'</dd><dt>المدينة</dt><dd>'+c.c+'</dd><dt>البريد</dt><dd>'+c.m+'</dd><dt>السيرة الذاتية</dt><dd><a href="#" onclick="return false">CV_'+c.n.replace(/ /g,"_")+'.pdf</a></dd></dl>';
+ h+='<div class="actions">';
+ if(idx<3&&c.s!="rejected")h+='<button class="btn" id="nx">نقل إلى «'+SN[ST[idx+1][0]]+'»</button>';
+ if(c.s!="rejected"&&c.s!="accepted")h+='<button class="btn ghost" id="rj">رفض</button>';
+ h+='</div><h2>التقييم بعد المقابلة</h2><div class="rate" id="rate">';
+ for(var k=1;k<=5;k++)h+='<button class="'+(k<=c.r?"on":"")+'" data-r="'+k+'" aria-label="'+k+' من 5">★</button>';
+ h+='</div><h2 style="margin-top:18px">ملاحظات الفريق</h2>';
+ if(!c.notes.length)h+='<div class="empty">لا توجد ملاحظات بعد. اكتب أول ملاحظة عن المرشح.</div>';
+ c.notes.forEach(function(n){h+='<div class="note"><small>'+n.a+'</small>'+n.t+'</div>'});
+ h+='<textarea id="nt2" rows="3" placeholder="اكتب ملاحظتك عن المقابلة"></textarea><div class="actions"><button class="btn" id="sv">حفظ الملاحظة</button></div>';
+ $("sheet").innerHTML=h;$("dr").classList.add("open");
+ $("x").onclick=closeC;
+ if($("nx"))$("nx").onclick=function(){move(c.id,ST[idx+1][0])};
+ if($("rj"))$("rj").onclick=function(){move(c.id,"rejected")};
+ document.querySelectorAll("[data-r]").forEach(function(b){b.onclick=function(){c.r=+b.dataset.r;render();openC(id)}});
+ $("sv").onclick=function(){var t=$("nt2").value.trim();if(!t){toast("اكتب الملاحظة قبل الحفظ");return}c.notes.push({a:"سارة – الموارد البشرية",t:t});render();openC(id);toast("تم حفظ الملاحظة")};
+}
+function closeC(){$("dr").classList.remove("open");openId=null}
+$("dr").onclick=function(e){if(e.target==this)closeC()};
+document.onkeydown=function(e){if(e.key=="Escape")closeC()};
+render();
+</script>
+</body>
+</html>
